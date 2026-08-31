@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { HangangPark } from '../types';
 import { 
   MapPin, 
@@ -10,7 +10,10 @@ import {
   Sparkles,
   ShoppingBag,
   Train,
-  CheckCircle2
+  CheckCircle2,
+  Search,
+  ExternalLink,
+  Camera
 } from 'lucide-react';
 
 interface ParkCardProps {
@@ -26,14 +29,21 @@ export const ParkCard: React.FC<ParkCardProps> = ({
   onToggleBookmark,
   onSelectPark,
 }) => {
+  const [imgSrc, setImgSrc] = useState(park.images[0]);
+
+  useEffect(() => {
+    setImgSrc(park.images[0]);
+  }, [park.images]);
+
   return (
     <div className="group bg-white/[0.04] hover:bg-white/[0.08] backdrop-blur-xl rounded-2xl border border-white/10 hover:border-sky-400/40 shadow-xl hover:shadow-2xl hover:shadow-sky-500/10 transition-all duration-300 flex flex-col overflow-hidden text-white">
       {/* Image Banner Header */}
       <div className="relative aspect-[16/10] overflow-hidden bg-slate-900">
         <img
-          src={park.images[0]}
+          src={imgSrc}
           alt={park.name}
           referrerPolicy="no-referrer"
+          onError={() => setImgSrc('https://images.unsplash.com/photo-1578637387939-43c525550085?auto=format&fit=crop&w=1400&q=85')}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/40 to-transparent" />
@@ -52,21 +62,35 @@ export const ParkCard: React.FC<ParkCardProps> = ({
           </span>
         </div>
 
-        {/* Bookmark Button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleBookmark(park.id);
-          }}
-          className={`absolute top-3 right-3 p-2 rounded-xl backdrop-blur-md border transition-all cursor-pointer ${
-            isBookmarked
-              ? 'bg-red-500 border-red-400 text-white scale-110 shadow-md shadow-red-500/40'
-              : 'bg-slate-900/70 border-white/20 text-white/90 hover:bg-slate-900 hover:text-white'
-          }`}
-          title={isBookmarked ? '찜 해제' : '찜하기'}
-        >
-          <Bookmark className="w-4 h-4" fill={isBookmarked ? 'currentColor' : 'none'} />
-        </button>
+        {/* Top Right Action Buttons: Google Images & Bookmark */}
+        <div className="absolute top-3 right-3 flex items-center space-x-1.5">
+          <a
+            href={`https://www.google.com/search?tbm=isch&q=${encodeURIComponent('서울 ' + park.name)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center space-x-1 px-2 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-900 text-sky-300 hover:text-sky-200 backdrop-blur-md border border-white/20 hover:border-sky-400/50 text-[10px] font-semibold transition-all shadow-md cursor-pointer"
+            title="Google에서 이 한강공원 실사 이미지 검색하기"
+          >
+            <Camera className="w-3 h-3 text-sky-400" />
+            <span className="hidden sm:inline">Google 실사</span>
+          </a>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleBookmark(park.id);
+            }}
+            className={`p-2 rounded-xl backdrop-blur-md border transition-all cursor-pointer ${
+              isBookmarked
+                ? 'bg-red-500 border-red-400 text-white scale-110 shadow-md shadow-red-500/40'
+                : 'bg-slate-900/70 border-white/20 text-white/90 hover:bg-slate-900 hover:text-white'
+            }`}
+            title={isBookmarked ? '찜 해제' : '찜하기'}
+          >
+            <Bookmark className="w-4 h-4" fill={isBookmarked ? 'currentColor' : 'none'} />
+          </button>
+        </div>
 
         {/* Bottom Title Overlay */}
         <div className="absolute bottom-3 left-3 right-3 text-white">

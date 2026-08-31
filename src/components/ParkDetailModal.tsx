@@ -55,6 +55,7 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'transit' | 'food' | 'rules' | 'nearby' | 'youtube'>('overview');
   const [copiedToast, setCopiedToast] = useState(false);
+  const [selectedGalleryImg, setSelectedGalleryImg] = useState<string | null>(null);
 
   if (!isOpen || !park) return null;
 
@@ -294,11 +295,25 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
           </div>
         )}
 
-        {/* Pastel-Toned Header Hero */}
-        <div className={`relative overflow-hidden bg-gradient-to-br ${theme.headerBg} border-b border-white/15 p-5 sm:p-7 md:p-8 shrink-0`}>
+        {/* Real Photo + Pastel-Toned Header Hero */}
+        <div className={`relative overflow-hidden border-b border-white/15 p-5 sm:p-7 md:p-8 shrink-0 min-h-[220px]`}>
+          {/* Background Real Park Image */}
+          <img
+            src={park.images[0]}
+            alt={park.name}
+            referrerPolicy="no-referrer"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1578637387939-43c525550085?auto=format&fit=crop&w=1400&q=85';
+            }}
+            className="absolute inset-0 w-full h-full object-cover object-center transform scale-105 filter brightness-[0.45] contrast-110"
+          />
+          {/* Pastel Theme & Dark Gradient Overlays for optimal text contrast */}
+          <div className={`absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/40`} />
+          <div className={`absolute inset-0 bg-gradient-to-br ${theme.headerBg} mix-blend-color-dodge opacity-40`} />
+
           {/* Subtle Ambient Pastel Glows */}
-          <div className={`absolute -top-12 -right-12 w-64 h-64 rounded-full ${theme.glowCircle1} blur-3xl pointer-events-none`} />
-          <div className={`absolute -bottom-12 -left-12 w-64 h-64 rounded-full ${theme.glowCircle2} blur-3xl pointer-events-none`} />
+          <div className={`absolute -top-12 -right-12 w-64 h-64 rounded-full ${theme.glowCircle1} blur-3xl pointer-events-none opacity-60`} />
+          <div className={`absolute -bottom-12 -left-12 w-64 h-64 rounded-full ${theme.glowCircle2} blur-3xl pointer-events-none opacity-60`} />
 
           {/* Decorative River Wave Pattern */}
           <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -364,7 +379,7 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
                   href={googleImageSearchUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-950/70 hover:bg-slate-900 text-slate-200 hover:text-white text-xs font-bold border border-white/20 backdrop-blur-md transition-all shadow-md cursor-pointer hover:scale-105"
+                  className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-950/80 hover:bg-slate-900 text-slate-200 hover:text-white text-xs font-bold border border-white/20 backdrop-blur-md transition-all shadow-md cursor-pointer hover:scale-105"
                   title="구글에서 실제 공원 사진 더 찾아보기"
                 >
                   <Search className="w-3.5 h-3.5 text-sky-400" />
@@ -473,6 +488,67 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
                     </span>
                   ))}
                 </div>
+              </div>
+
+              {/* Real Park Scenery Gallery (4 Real Photos) */}
+              <div className="bg-white/[0.04] p-4 sm:p-5 rounded-2xl border border-white/10 backdrop-blur-md">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="p-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-400/30">
+                      <Camera className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
+                        {park.name} 실제 현장 풍경 갤러리
+                        <span className="text-[11px] font-normal text-sky-300 bg-sky-500/10 px-2 py-0.5 rounded-full border border-sky-400/20">
+                          실사 4컷
+                        </span>
+                      </h4>
+                    </div>
+                  </div>
+                  <a
+                    href={googleImageSearchUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-sky-400 hover:text-sky-300 font-semibold flex items-center space-x-1 transition-colors"
+                  >
+                    <span>구글 실사 더보기</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  {park.images.map((imgUrl, idx) => {
+                    const labels = ['수변 파노라마 / 낮', '노을 & 골든아워', '야경 & 랜드마크', '산책로 & 피크닉'];
+                    return (
+                      <div
+                        key={idx}
+                        onClick={() => setSelectedGalleryImg(imgUrl)}
+                        className="group relative rounded-xl overflow-hidden aspect-4/3 border border-white/10 bg-slate-900 cursor-pointer shadow-md hover:border-sky-400/60 transition-all hover:scale-[1.02]"
+                      >
+                        <img
+                          src={imgUrl}
+                          alt={`${park.name} 실사 ${idx + 1}`}
+                          referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1578637387939-43c525550085?auto=format&fit=crop&w=1400&q=85';
+                          }}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute bottom-1.5 left-2 right-2 flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-white/90 truncate">
+                            {labels[idx] || `현장 컷 #${idx + 1}`}
+                          </span>
+                          <Search className="w-3 h-3 text-sky-300 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <p className="text-[11px] text-slate-400 mt-2.5 text-center">
+                  💡 사진을 클릭하면 크게 확대하여 볼 수 있습니다.
+                </p>
               </div>
 
               {/* Highlights 4 Cards */}
@@ -972,6 +1048,44 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Full-Screen Gallery Image Lightbox */}
+      {selectedGalleryImg && (
+        <div
+          className="fixed inset-0 z-60 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 sm:p-8 animate-fadeIn"
+          onClick={() => setSelectedGalleryImg(null)}
+        >
+          <div
+            className="relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedGalleryImg(null)}
+              className="absolute -top-12 right-0 p-2 rounded-full bg-white/20 hover:bg-white/30 text-white transition-all cursor-pointer"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <img
+              src={selectedGalleryImg}
+              alt={`${park.name} 고화질 실사`}
+              referrerPolicy="no-referrer"
+              className="w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl border border-white/20"
+            />
+            <div className="mt-3 flex items-center justify-between w-full text-white/90 text-sm px-2">
+              <span className="font-bold">{park.name} 실제 현장 풍경</span>
+              <a
+                href={googleImageSearchUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-sky-400 hover:underline flex items-center space-x-1"
+              >
+                <span>구글에서 더 많은 실사 보기</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
