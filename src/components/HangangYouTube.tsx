@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { HANGANG_YOUTUBE_VIDEOS, HangangYouTubeVideo, getYouTubeSearchUrl } from '../data/youtubeData';
+import { 
+  HANGANG_YOUTUBE_VIDEOS, 
+  HangangYouTubeVideo, 
+  getYouTubeWatchUrl, 
+  getYouTubeSearchUrl,
+  getYouTubeThumbnailUrl 
+} from '../data/youtubeData';
 import { HANGANG_PARKS } from '../data/hangangData';
 import { 
   Play, 
@@ -64,9 +70,9 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
   });
 
   const handleShareVideo = (video: HangangYouTubeVideo) => {
-    const url = getYouTubeSearchUrl(video.youtubeQuery);
+    const url = video.videoUrl || getYouTubeWatchUrl(video.videoId);
     navigator.clipboard.writeText(url);
-    setCopiedToast(`'${video.title.slice(0, 20)}...' 유튜브 검색 링크가 복사되었습니다!`);
+    setCopiedToast(`'${video.title.slice(0, 20)}...' 유튜브 영상 링크가 복사되었습니다!`);
     setTimeout(() => setCopiedToast(null), 2500);
   };
 
@@ -75,8 +81,12 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  const handlePlayVideo = (video: HangangYouTubeVideo) => {
-    // Open the YouTube search/watch directly in YouTube or modal
+  const openDirectVideo = (video: HangangYouTubeVideo) => {
+    const url = video.videoUrl || getYouTubeWatchUrl(video.videoId);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handlePreviewVideo = (video: HangangYouTubeVideo) => {
     setActiveVideo(video);
   };
 
@@ -93,11 +103,11 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
           </div>
 
           <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight mb-3">
-            한강 11개 공원 <span className="bg-gradient-to-r from-red-400 via-rose-300 to-amber-300 bg-clip-text text-transparent">실시간 유튜브 영상 라운지</span>
+            한강 11개 공원 <span className="bg-gradient-to-r from-red-400 via-rose-300 to-amber-300 bg-clip-text text-transparent">실제 유튜브 영상 & 실시간 썸네일</span>
           </h1>
 
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed mb-6 font-medium">
-            4K 초고화질 랜선 산책부터 달빛무지개분수 야경, 뚝섬 SUP 패들보드, 난지 바베큐 먹방, 따릉이 라이딩 종주 브이로그까지 유튜브의 생생한 현장 영상을 바로 감상해보세요.
+            유튜브 공식 썸네일과 원본 영상 직접 링크로 한강의 생생한 현장을 감상하세요. 4K 드론뷰부터 즉석 한강라면 먹방, 달빛무지개분수, 패들보드, 불꽃축제까지 엄선된 인기 영상을 바로 시청할 수 있습니다.
           </p>
 
           {/* YouTube Search Bar */}
@@ -127,7 +137,7 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
             </div>
 
             <button
-              onClick={() => openDirectYouTubeSearch(searchQuery || '핫플레이스 브이로그')}
+              onClick={() => openDirectYouTubeSearch(searchQuery || '한강공원 브이로그')}
               className="px-5 py-2.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 active:scale-95 text-white text-xs sm:text-sm font-bold rounded-2xl flex items-center justify-center space-x-2 transition-all shadow-lg shadow-red-600/30 cursor-pointer shrink-0 border border-red-400/40"
             >
               <Youtube className="w-4 h-4" />
@@ -153,7 +163,7 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
             <Tv className="w-4 h-4 text-red-400" />
             <span>11개 한강공원 유튜브 실시간 바로보기</span>
           </div>
-          <span className="text-[11px] text-slate-400">클릭 시 해당 공원의 최신 브이로그로 이동합니다</span>
+          <span className="text-[11px] text-slate-400">클릭 시 해당 공원의 최신 브이로그 검색으로 이동합니다</span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
@@ -168,7 +178,7 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
             </button>
           ))}
           <button
-            onClick={() => openDirectYouTubeSearch('서울세계불꽃축제 명당')}
+            onClick={() => openDirectYouTubeSearch('서울세계불꽃축제 명당 4K')}
             className="flex items-center justify-between px-3 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-400/30 text-xs font-bold text-amber-300 transition-all cursor-pointer"
           >
             <span>불꽃축제 명당</span>
@@ -224,7 +234,7 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
       {/* Quick Search Tag Chips */}
       <div className="flex flex-wrap items-center gap-1.5 bg-white/[0.03] p-3 rounded-2xl border border-white/10 text-xs">
         <span className="text-slate-400 font-semibold mr-1 flex items-center">
-          <Sparkles className="w-3.5 h-3.5 text-amber-400 mr-1" /> 인기 테마 바로가기:
+          <Sparkles className="w-3.5 h-3.5 text-amber-400 mr-1" /> 인기 테마 검색:
         </span>
         {[
           '반포 달빛무지개분수',
@@ -256,20 +266,26 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
               className="group bg-slate-900/80 rounded-2xl border border-white/10 overflow-hidden shadow-xl hover:border-red-500/40 hover:shadow-2xl hover:shadow-red-950/40 transition-all duration-300 flex flex-col"
             >
               {/* Thumbnail Container with Play Overlay */}
-              <div 
-                onClick={() => handlePlayVideo(video)}
-                className="relative h-48 sm:h-52 w-full overflow-hidden cursor-pointer bg-slate-950"
+              <a
+                href={video.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative h-48 sm:h-52 w-full overflow-hidden cursor-pointer bg-slate-950 block"
               >
                 <img
-                  src={video.thumbnail}
+                  src={video.thumbnail || getYouTubeThumbnailUrl(video.videoId)}
                   alt={video.title}
                   referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    // Fallback to standard YouTube thumbnail if HQ fails
+                    (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg`;
+                  }}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
 
                 {/* Duration Badge */}
-                <div className="absolute bottom-2.5 right-2.5 bg-black/80 backdrop-blur-xs text-white text-[11px] font-bold px-2 py-0.5 rounded-md flex items-center space-x-1 border border-white/10">
+                <div className="absolute bottom-2.5 right-2.5 bg-black/85 backdrop-blur-xs text-white text-[11px] font-bold px-2 py-0.5 rounded-md flex items-center space-x-1 border border-white/10">
                   <Clock className="w-3 h-3 text-slate-300" />
                   <span>{video.duration}</span>
                 </div>
@@ -280,23 +296,31 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
                   <span>{video.parkName}</span>
                 </div>
 
+                {/* YouTube Direct Badge */}
+                <div className="absolute top-2.5 right-2.5 bg-black/70 backdrop-blur-xs text-red-400 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center space-x-1 border border-red-500/30">
+                  <Youtube className="w-3 h-3" />
+                  <span>YouTube</span>
+                </div>
+
                 {/* Big Center Play Icon Button */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all">
                   <div className="w-14 h-14 rounded-full bg-red-600/90 hover:bg-red-500 text-white flex items-center justify-center shadow-xl shadow-red-600/50 border border-white/30">
                     <Play className="w-6 h-6 fill-white ml-0.5" />
                   </div>
                 </div>
-              </div>
+              </a>
 
               {/* Card Body */}
               <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                 <div>
-                  <h3 
-                    onClick={() => handlePlayVideo(video)}
-                    className="font-bold text-base text-white group-hover:text-red-300 transition-colors line-clamp-2 leading-snug cursor-pointer mb-2"
+                  <a 
+                    href={video.videoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-bold text-base text-white group-hover:text-red-300 transition-colors line-clamp-2 leading-snug cursor-pointer mb-2 block"
                   >
                     {video.title}
-                  </h3>
+                  </a>
 
                   <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed mb-3">
                     {video.description}
@@ -319,18 +343,28 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
                     </div>
                   </div>
 
-                  {/* Actions: Watch / Park Detail / Share */}
+                  {/* Actions: Watch / Info / Share */}
                   <div className="flex items-center justify-between gap-1.5">
-                    <button
-                      onClick={() => handlePlayVideo(video)}
+                    <a
+                      href={video.videoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex-1 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs transition-all shadow-md shadow-red-600/30 flex items-center justify-center space-x-1.5 cursor-pointer border border-red-400/40"
                     >
                       <Youtube className="w-3.5 h-3.5" />
-                      <span>유튜브에서 시청</span>
+                      <span>영상 직접보기</span>
                       <ExternalLink className="w-3 h-3 opacity-80" />
+                    </a>
+
+                    <button
+                      onClick={() => handlePreviewVideo(video)}
+                      className="px-2.5 py-2 rounded-xl bg-white/5 hover:bg-white/15 text-slate-200 font-semibold text-xs transition-colors border border-white/10 cursor-pointer"
+                      title="영상 요약 및 상세 보기"
+                    >
+                      요약
                     </button>
 
-                    {video.parkId && (
+                    {video.parkId && video.parkId !== 'all' && (
                       <button
                         onClick={() => onSelectPark(video.parkId)}
                         className="px-2.5 py-2 rounded-xl bg-white/5 hover:bg-white/15 text-sky-300 font-semibold text-xs transition-colors border border-white/10 cursor-pointer"
@@ -343,7 +377,7 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
                     <button
                       onClick={() => handleShareVideo(video)}
                       className="p-2 rounded-xl bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white transition-colors border border-white/10 cursor-pointer"
-                      title="유튜브 링크 복사"
+                      title="유튜브 영상 링크 복사"
                     >
                       <Share2 className="w-3.5 h-3.5" />
                     </button>
@@ -373,7 +407,7 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
         </div>
       )}
 
-      {/* Video Modal Player & Info */}
+      {/* Video Modal Preview & Direct Link */}
       {activeVideo && (
         <div 
           className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-fade-in"
@@ -402,27 +436,34 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
             </div>
 
             {/* Video Hero Preview */}
-            <div className="relative h-64 sm:h-72 w-full bg-slate-950 overflow-hidden">
+            <a 
+              href={activeVideo.videoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative h-64 sm:h-72 w-full bg-slate-950 overflow-hidden block group cursor-pointer"
+            >
               <img
-                src={activeVideo.thumbnail}
+                src={activeVideo.thumbnail || getYouTubeThumbnailUrl(activeVideo.videoId)}
                 alt={activeVideo.title}
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${activeVideo.videoId}/hqdefault.jpg`;
+                }}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
 
               <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                <div 
-                  onClick={() => openDirectYouTubeSearch(activeVideo.youtubeQuery)}
-                  className="w-16 h-16 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center shadow-2xl shadow-red-600/60 border-2 border-white/40 cursor-pointer transform hover:scale-110 transition-all mb-4"
-                >
+                <div className="w-16 h-16 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center shadow-2xl shadow-red-600/60 border-2 border-white/40 transform group-hover:scale-110 transition-all mb-4">
                   <Play className="w-8 h-8 fill-white ml-1" />
                 </div>
-                <span className="text-xs font-bold text-slate-200 bg-black/60 px-3 py-1 rounded-full border border-white/20 backdrop-blur-xs">
-                  유튜브에서 고화질 4K로 재생하기
+                <span className="text-xs font-bold text-white bg-black/70 px-3.5 py-1.5 rounded-full border border-white/20 backdrop-blur-xs flex items-center space-x-1.5">
+                  <Youtube className="w-4 h-4 text-red-400" />
+                  <span>유튜브에서 이 영상 바로보기 (클릭)</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
                 </span>
               </div>
-            </div>
+            </a>
 
             {/* Video Info Bottom Bar */}
             <div className="p-5 sm:p-6 bg-slate-900 space-y-4">
@@ -433,6 +474,8 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
                   <span>조회수 {activeVideo.views}</span>
                   <span>•</span>
                   <span>{activeVideo.uploadDate}</span>
+                  <span>•</span>
+                  <span className="text-red-400 font-bold">{activeVideo.parkName}</span>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed mb-3">
                   {activeVideo.description}
@@ -448,19 +491,18 @@ export const HangangYouTube: React.FC<HangangYouTubeProps> = ({ onSelectPark }) 
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-2.5 pt-3 border-t border-white/10">
-                <button
-                  onClick={() => {
-                    openDirectYouTubeSearch(activeVideo.youtubeQuery);
-                    setActiveVideo(null);
-                  }}
+                <a
+                  href={activeVideo.videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex-1 py-3 px-4 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white rounded-2xl text-sm font-extrabold flex items-center justify-center space-x-2 shadow-lg shadow-red-600/40 transition-all cursor-pointer border border-red-400/40"
                 >
                   <Youtube className="w-5 h-5" />
-                  <span>유튜브 앱/웹에서 시청하기</span>
+                  <span>유튜브 원본 영상 직접보기</span>
                   <ExternalLink className="w-4 h-4" />
-                </button>
+                </a>
 
-                {activeVideo.parkId && (
+                {activeVideo.parkId && activeVideo.parkId !== 'all' && (
                   <button
                     onClick={() => {
                       onSelectPark(activeVideo.parkId);

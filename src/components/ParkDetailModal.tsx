@@ -858,26 +858,34 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
                       className="group bg-white/[0.04] rounded-2xl border border-white/10 overflow-hidden hover:border-red-500/40 transition-all flex flex-col justify-between"
                     >
                       <a 
-                        href={`https://www.youtube.com/results?search_query=${encodeURIComponent(video.youtubeQuery)}`}
+                        href={video.videoUrl || `https://www.youtube.com/watch?v=${video.videoId}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="relative h-40 w-full bg-slate-950 overflow-hidden cursor-pointer block"
                       >
                         <img
-                          src={video.thumbnail}
+                          src={video.thumbnail || `https://i.ytimg.com/vi/${video.videoId}/hqdefault.jpg`}
                           alt={video.title}
                           referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg`;
+                          }}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                         
-                        <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center space-x-1">
+                        <div className="absolute bottom-2 right-2 bg-black/85 text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center space-x-1 border border-white/10">
                           <Clock className="w-2.5 h-2.5" />
                           <span>{video.duration}</span>
                         </div>
 
+                        <div className="absolute top-2 right-2 bg-black/75 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center space-x-1 border border-red-500/30">
+                          <Youtube className="w-2.5 h-2.5" />
+                          <span>YouTube</span>
+                        </div>
+
                         <div className="absolute inset-0 flex items-center justify-center opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all">
-                          <div className="w-10 h-10 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-lg shadow-red-600/40">
+                          <div className="w-10 h-10 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-lg shadow-red-600/40 border border-white/20">
                             <Play className="w-5 h-5 fill-white ml-0.5" />
                           </div>
                         </div>
@@ -886,7 +894,7 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
                       <div className="p-3.5 flex-1 flex flex-col justify-between">
                         <div>
                           <a 
-                            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(video.youtubeQuery)}`}
+                            href={video.videoUrl || `https://www.youtube.com/watch?v=${video.videoId}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="font-bold text-xs sm:text-sm text-white group-hover:text-red-300 transition-colors line-clamp-2 leading-snug cursor-pointer mb-1.5 block"
@@ -903,13 +911,13 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
                             {video.channel}
                           </span>
                           <a
-                            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(video.youtubeQuery)}`}
+                            href={video.videoUrl || `https://www.youtube.com/watch?v=${video.videoId}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-red-400 hover:text-red-300 font-bold flex items-center space-x-1 cursor-pointer"
                           >
                             <Play className="w-3 h-3 fill-current" />
-                            <span>유튜브에서 시청</span>
+                            <span>영상 직접보기</span>
                             <ExternalLink className="w-2.5 h-2.5" />
                           </a>
                         </div>
