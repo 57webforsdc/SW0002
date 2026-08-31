@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { HANGANG_PARKS, HANGANG_BRIDGES } from '../data/hangangData';
 import { HangangPark } from '../types';
-import { GoogleHangangMap } from './GoogleHangangMap';
+import { CleanHangangMap } from './CleanHangangMap';
 import { 
   MapPin, 
   Sparkles, 
@@ -93,7 +93,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
             </h2>
           </div>
           <p className="text-sm text-slate-300 mt-1">
-            구글 지도 실사 배경과 한강 가이드 수계도에서 강북 4개소 • 강남 7개소 및 23개 교량을 확인하세요.
+            고해상도 실사 지도와 한강 가이드 수계도에서 강북 4개소 • 강남 7개소 및 23개 교량을 확인하세요.
           </p>
         </div>
 
@@ -110,7 +110,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
               }`}
             >
               <MapIcon className="w-3.5 h-3.5" />
-              <span>구글 실사 지도</span>
+              <span>실사 인터랙티브 맵</span>
             </button>
             <button
               onClick={() => setMapMode('vector')}
@@ -199,9 +199,9 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         </div>
       </div>
 
-      {/* Map Content: Google Maps or Vector Map */}
+      {/* Map Content: Interactive Real Map or Vector Map */}
       {mapMode === 'google' ? (
-        <GoogleHangangMap
+        <CleanHangangMap
           parks={filteredParks}
           selectedParkId={selectedParkId}
           onSelectPark={onSelectPark}
@@ -343,20 +343,31 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                   key={bridge.name}
                   onMouseEnter={() => setHoveredBridge(bridge.name)}
                   onMouseLeave={() => setHoveredBridge(null)}
-                  className="cursor-pointer group"
+                  className="cursor-pointer"
                 >
+                  {/* Invisible thicker hitline for stable hover detection */}
+                  <line
+                    x1={bridge.x1}
+                    y1={bridge.y1}
+                    x2={bridge.x2}
+                    y2={bridge.y2}
+                    stroke="transparent"
+                    strokeWidth={16}
+                    strokeLinecap="round"
+                  />
+                  {/* Visible bridge line */}
                   <line
                     x1={bridge.x1}
                     y1={bridge.y1}
                     x2={bridge.x2}
                     y2={bridge.y2}
                     stroke={isHovered ? '#fbbf24' : '#64748b'}
-                    strokeWidth={isHovered ? 4 : 2}
+                    strokeWidth={isHovered ? 3.5 : 2}
                     strokeLinecap="round"
-                    className="transition-all"
+                    className="pointer-events-none transition-colors duration-150"
                   />
                   {isHovered && (
-                    <g>
+                    <g className="pointer-events-none">
                       <rect
                         x={bridge.midX - 55}
                         y={bridge.midY - 42}
@@ -409,56 +420,71 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                   onClick={() => onSelectPark(park.id)}
                   onMouseEnter={() => setHoveredPark(park)}
                   onMouseLeave={() => setHoveredPark(null)}
-                  className="cursor-pointer group"
+                  className="cursor-pointer"
                 >
-                  {/* Ping animation ripple for selected or hovered */}
+                  {/* Stable Invisible Hit Area - Prevents ANY cursor jitter */}
+                  <circle
+                    cx={svgX}
+                    cy={svgY}
+                    r={26}
+                    fill="transparent"
+                  />
+
+                  {/* Soft Glow Ring on hover or selection */}
                   {(isSelected || isHovered) && (
                     <circle
                       cx={svgX}
                       cy={svgY}
-                      r="22"
+                      r={isSelected ? 18 : 15}
                       fill={pinColor}
-                      opacity="0.3"
-                      className="animate-ping origin-center"
+                      fillOpacity={isSelected ? 0.35 : 0.22}
+                      stroke={pinColor}
+                      strokeWidth={1}
+                      strokeOpacity={0.6}
+                      className="pointer-events-none transition-all duration-200"
                     />
                   )}
 
-                  {/* Outer Pin Circle */}
+                  {/* Outer Main Pin Circle */}
                   <circle
                     cx={svgX}
                     cy={svgY}
-                    r={isSelected ? 16 : isHovered ? 14 : 11}
-                    fill={pinColor}
+                    r={isSelected ? 12 : isHovered ? 10.5 : 8.5}
+                    fill={isSelected ? '#f59e0b' : isHovered ? '#38bdf8' : pinColor}
                     stroke="#ffffff"
-                    strokeWidth={isSelected ? 3 : 2}
-                    className="transition-all drop-shadow-md group-hover:scale-110"
+                    strokeWidth={isSelected ? 2.5 : 2}
+                    className="pointer-events-none transition-all duration-150 drop-shadow-md"
                   />
 
-                  {/* Inner Dot */}
+                  {/* Inner White Dot */}
                   <circle
                     cx={svgX}
                     cy={svgY}
-                    r="4"
+                    r={isSelected ? 3.5 : 2.5}
                     fill="#ffffff"
+                    className="pointer-events-none"
                   />
 
                   {/* Park Label Pill */}
-                  <g transform={`translate(${svgX}, ${svgY + (park.bank === '강북' ? -22 : 24)})`}>
+                  <g 
+                    transform={`translate(${svgX}, ${svgY + (park.bank === '강북' ? -22 : 24)})`}
+                    className="pointer-events-none"
+                  >
                     <rect
                       x="-44"
                       y="-11"
                       width="88"
                       height="22"
                       rx="11"
-                      fill={isSelected ? pinColor : '#0f172a'}
-                      stroke={isSelected ? '#ffffff' : pinColor}
-                      strokeWidth="1.5"
-                      className="transition-colors drop-shadow-sm"
+                      fill={isSelected ? '#f59e0b' : isHovered ? '#1e293b' : '#0f172a'}
+                      stroke={isSelected ? '#ffffff' : isHovered ? '#38bdf8' : pinColor}
+                      strokeWidth={isSelected ? 2 : 1.5}
+                      className="transition-colors duration-150 drop-shadow-md"
                     />
                     <text
                       x="0"
-                      y="3"
-                      fill="#ffffff"
+                      y="3.5"
+                      fill={isSelected ? '#020617' : '#ffffff'}
                       fontSize="10"
                       fontWeight="700"
                       textAnchor="middle"
@@ -474,7 +500,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
         {/* Hovered Park Preview Float Card */}
         {hoveredPark && (
-          <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-80 bg-slate-900/95 backdrop-blur-xl text-white p-4 rounded-2xl border border-white/20 shadow-2xl z-30 animate-fade-in pointer-events-none sm:pointer-events-auto">
+          <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-80 bg-slate-900/95 backdrop-blur-xl text-white p-4 rounded-2xl border border-white/20 shadow-2xl z-30 animate-fade-in pointer-events-auto">
             <div className="flex items-start justify-between">
               <div>
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${

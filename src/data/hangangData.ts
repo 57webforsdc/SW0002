@@ -26,7 +26,7 @@ export const HANGANG_PARKS: HangangPark[] = [
       'https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&w=1400&q=85',
     ],
     tags: ['피크닉 성지', '물빛광장', '배달존 1·2·3', '이크루즈 유람선', '버스킹 명소', '더현대 연계'],
-    mapCoords: { x: 35, y: 73 },
+    mapCoords: { x: 38, y: 78 },
     coords: { lat: 37.5283, lng: 126.9329 },
     highlights: [
       {
@@ -122,7 +122,7 @@ export const HANGANG_PARKS: HangangPark[] = [
       'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=85',
     ],
     tags: ['달빛무지개분수', '세빛섬', '서래섬 유채꽃', '튜브스터 보트', '야경 1번지', '잠수교 뚜벅이'],
-    mapCoords: { x: 56, y: 82 },
+    mapCoords: { x: 58, y: 84 },
     coords: { lat: 37.5098, lng: 126.9950 },
     highlights: [
       {
@@ -220,7 +220,7 @@ export const HANGANG_PARKS: HangangPark[] = [
       'https://images.unsplash.com/photo-1578637387939-43c525550085?auto=format&fit=crop&w=1400&q=85',
     ],
     tags: ['자벌레 전망대', 'SUP 패들보드', '뚝섬유원지역 직결', '성수동 연계', '사계절 수영장', '음악분수'],
-    mapCoords: { x: 74, y: 32 },
+    mapCoords: { x: 75, y: 22 },
     coords: { lat: 37.5294, lng: 127.0697 },
     highlights: [
       {
@@ -316,7 +316,7 @@ export const HANGANG_PARKS: HangangPark[] = [
       'https://images.unsplash.com/photo-1546874177-9e664107314e?auto=format&fit=crop&w=1400&q=85',
     ],
     tags: ['망원시장 연계', '서울함공원', '성산대교 노을뷰', '망리단길 감성', '수변 산책로'],
-    mapCoords: { x: 26, y: 27 },
+    mapCoords: { x: 27, y: 22 },
     coords: { lat: 37.5539, lng: 126.8967 },
     highlights: [
       {
@@ -409,7 +409,7 @@ export const HANGANG_PARKS: HangangPark[] = [
       'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=85',
     ],
     tags: ['난지캠핑장', '바베큐존', '락페스티벌', '거울분수', '물놀이장', 'MTB코스'],
-    mapCoords: { x: 15, y: 22 },
+    mapCoords: { x: 14, y: 18 },
     coords: { lat: 37.5661, lng: 126.8803 },
     highlights: [
       {
@@ -505,7 +505,7 @@ export const HANGANG_PARKS: HangangPark[] = [
       'https://images.unsplash.com/photo-1578637387939-43c525550085?auto=format&fit=crop&w=1400&q=85',
     ],
     tags: ['롯데타워 뷰', '잠실 물놀이장', '잠실 어도(물고기길)', '누에생태학습장', '파크골프장'],
-    mapCoords: { x: 80, y: 70 },
+    mapCoords: { x: 82, y: 78 },
     coords: { lat: 37.5180, lng: 127.0825 },
     highlights: [
       {
@@ -598,7 +598,7 @@ export const HANGANG_PARKS: HangangPark[] = [
       'https://images.unsplash.com/photo-1509233725247-49e657c54213?auto=format&fit=crop&w=1400&q=85',
     ],
     tags: ['노들섬 연결', '버드나무 숲길', '한강예술공원', '조용한 사색', '용산 연계', '인라인 롤러스케이트'],
-    mapCoords: { x: 48, y: 39 },
+    mapCoords: { x: 49, y: 24 },
     coords: { lat: 37.5165, lng: 126.9712 },
     highlights: [
       {
@@ -691,7 +691,7 @@ export const HANGANG_PARKS: HangangPark[] = [
       'https://images.unsplash.com/photo-1548115184-bc6544d06a58?auto=format&fit=crop&w=1400&q=85',
     ],
     tags: ['가로수길 연계', '그라스가든(핑크뮬리)', '압구정 나들목', '잠원 수영장', '러닝 트랙'],
-    mapCoords: { x: 66, y: 76 },
+    mapCoords: { x: 67, y: 82 },
     coords: { lat: 37.5218, lng: 127.0118 },
     highlights: [
       {
@@ -784,7 +784,7 @@ export const HANGANG_PARKS: HangangPark[] = [
       'https://images.unsplash.com/photo-1538669715315-155099bfa8b1?auto=format&fit=crop&w=1400&q=85',
     ],
     tags: ['암사생태공원', '서울 유일 드론공원', '어린이 자전거레이싱장', '맑은 상류 수질', '조용한 힐링'],
-    mapCoords: { x: 91, y: 65 },
+    mapCoords: { x: 92, y: 70 },
     coords: { lat: 37.5501, lng: 127.1215 },
     highlights: [
       {
@@ -877,7 +877,7 @@ export const HANGANG_PARKS: HangangPark[] = [
       'https://images.unsplash.com/photo-1546874177-9e664107314e?auto=format&fit=crop&w=1400&q=85',
     ],
     tags: ['선유도공원 연결', '선유보행교', '양화 전망카페', '물억새 군락지', '당산역 접근성'],
-    mapCoords: { x: 22, y: 64 },
+    mapCoords: { x: 23, y: 74 },
     coords: { lat: 37.5385, lng: 126.9023 },
     highlights: [
       {
@@ -970,7 +970,7 @@ export const HANGANG_PARKS: HangangPark[] = [
       'https://images.unsplash.com/photo-1509233725247-49e657c54213?auto=format&fit=crop&w=1400&q=85',
     ],
     tags: ['강서습지생태원', '방화대교 야경', '철새 도래지', '조용한 산책', '아라뱃길 라이딩 출발점'],
-    mapCoords: { x: 7, y: 55 },
+    mapCoords: { x: 7, y: 64 },
     coords: { lat: 37.5878, lng: 126.8164 },
     highlights: [
       {
