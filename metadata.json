@@ -1,0 +1,6 @@
+{
+  "name": "서울 한강공원 가이드 (Seoul Hangang Parks)",
+  "description": "서울의 11개 한강공원 상세 정보, 인터랙티브 맵, 피크닉 꿀팁, 배달존·라면 가이드 및 맞춤 코스 추천",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
