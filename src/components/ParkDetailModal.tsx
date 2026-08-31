@@ -55,7 +55,6 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'transit' | 'food' | 'rules' | 'nearby' | 'youtube'>('overview');
   const [copiedToast, setCopiedToast] = useState(false);
-  const [activeModalVideoId, setActiveModalVideoId] = useState<string | null>(null);
 
   if (!isOpen || !park) return null;
 
@@ -807,7 +806,7 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
                     {park.name} 생생 현장 영상 & 브이로그
                   </h4>
                   <p className="text-xs text-slate-300 mt-0.5">
-                    공원의 실시간 풍경, 노을 스팟, 먹거리 브이로그를 4K 고화질로 미리 둘러보세요.
+                    공원의 실시간 풍경, 노을 스팟, 먹거리 브이로그를 고화질로 확인해보세요.
                   </p>
                 </div>
 
@@ -815,40 +814,40 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
                   href={youtubeSearchUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all shadow-md shadow-red-600/30 shrink-0 cursor-pointer"
+                  className="px-4 py-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all shadow-md shadow-red-600/30 shrink-0 cursor-pointer border border-red-400/40"
                 >
                   <Youtube className="w-3.5 h-3.5" />
-                  <span>유튜브에서 더 검색</span>
+                  <span>유튜브에서 전체 검색</span>
                   <ExternalLink className="w-3 h-3 opacity-80" />
                 </a>
               </div>
 
-              {/* In-Modal Active Video Player */}
-              {activeModalVideoId && (
-                <div className="rounded-2xl overflow-hidden border border-red-500/40 bg-black shadow-2xl">
-                  <div className="flex items-center justify-between px-4 py-2.5 bg-slate-950 text-xs text-white">
-                    <span className="font-bold flex items-center space-x-1.5 text-red-400">
-                      <Film className="w-4 h-4" />
-                      <span>현재 재생 중인 영상</span>
-                    </span>
-                    <button
-                      onClick={() => setActiveModalVideoId(null)}
-                      className="text-slate-400 hover:text-white px-2 py-0.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors cursor-pointer text-xs"
-                    >
-                      영상 닫기 ✕
-                    </button>
-                  </div>
-                  <div className="relative w-full pb-[56.25%] bg-black">
-                    <iframe
-                      src={`https://www.youtube-nocookie.com/embed/${activeModalVideoId}?autoplay=1&rel=0`}
-                      title="YouTube video player"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                      className="absolute inset-0 w-full h-full border-0"
-                    />
-                  </div>
+              {/* Park Specific Topic Quick Search Buttons */}
+              <div className="bg-white/[0.03] p-4 rounded-2xl border border-white/10 space-y-2">
+                <div className="flex items-center space-x-1.5 text-xs text-slate-300 font-bold">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{park.name} 인기 추천 검색 테마</span>
                 </div>
-              )}
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    `${park.name} 4K 랜선산책`,
+                    `${park.name} 노을 야경`,
+                    `${park.name} 한강라면 피크닉`,
+                    `${park.name} 주차장 텐트존 꿀팁`,
+                  ].map((theme) => (
+                    <a
+                      key={theme}
+                      href={`https://www.youtube.com/results?search_query=${encodeURIComponent(theme)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-red-600/20 text-slate-300 hover:text-white border border-white/10 hover:border-red-400/40 text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer"
+                    >
+                      <span>{theme}</span>
+                      <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                    </a>
+                  ))}
+                </div>
+              </div>
 
               {/* Video Cards Grid */}
               {parkVideos.length > 0 ? (
@@ -858,9 +857,11 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
                       key={video.id}
                       className="group bg-white/[0.04] rounded-2xl border border-white/10 overflow-hidden hover:border-red-500/40 transition-all flex flex-col justify-between"
                     >
-                      <div 
-                        onClick={() => setActiveModalVideoId(video.youtubeId)}
-                        className="relative h-40 w-full bg-slate-950 overflow-hidden cursor-pointer"
+                      <a 
+                        href={`https://www.youtube.com/results?search_query=${encodeURIComponent(video.youtubeQuery)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="relative h-40 w-full bg-slate-950 overflow-hidden cursor-pointer block"
                       >
                         <img
                           src={video.thumbnail}
@@ -880,16 +881,18 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
                             <Play className="w-5 h-5 fill-white ml-0.5" />
                           </div>
                         </div>
-                      </div>
+                      </a>
 
                       <div className="p-3.5 flex-1 flex flex-col justify-between">
                         <div>
-                          <h5 
-                            onClick={() => setActiveModalVideoId(video.youtubeId)}
-                            className="font-bold text-xs sm:text-sm text-white group-hover:text-red-300 transition-colors line-clamp-2 leading-snug cursor-pointer mb-1.5"
+                          <a 
+                            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(video.youtubeQuery)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-bold text-xs sm:text-sm text-white group-hover:text-red-300 transition-colors line-clamp-2 leading-snug cursor-pointer mb-1.5 block"
                           >
                             {video.title}
-                          </h5>
+                          </a>
                           <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">
                             {video.description}
                           </p>
@@ -899,13 +902,16 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
                           <span className="font-semibold text-slate-300 truncate max-w-[120px]">
                             {video.channel}
                           </span>
-                          <button
-                            onClick={() => setActiveModalVideoId(video.youtubeId)}
+                          <a
+                            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(video.youtubeQuery)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="text-red-400 hover:text-red-300 font-bold flex items-center space-x-1 cursor-pointer"
                           >
                             <Play className="w-3 h-3 fill-current" />
-                            <span>재생</span>
-                          </button>
+                            <span>유튜브에서 시청</span>
+                            <ExternalLink className="w-2.5 h-2.5" />
+                          </a>
                         </div>
                       </div>
                     </div>
@@ -921,7 +927,7 @@ export const ParkDetailModal: React.FC<ParkDetailModalProps> = ({
                     href={youtubeSearchUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center space-x-1.5 px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl transition-all shadow-md cursor-pointer"
+                    className="inline-flex items-center space-x-1.5 px-4 py-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-bold rounded-xl transition-all shadow-md cursor-pointer border border-red-400/40"
                   >
                     <Youtube className="w-4 h-4" />
                     <span>유튜브에서 {park.name} 영상 보기</span>
